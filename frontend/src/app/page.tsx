@@ -85,7 +85,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section id="features" className="scroll-mt-20 py-20 px-6">
+      <section id="features" className="scroll-mt-20 py-20 px-6 w-screen h-screen">
         <h2 className="text-3xl font-bold mb-10 text-center">Why Shop With Us?</h2>
         <div className="grid gap-8 md:grid-cols-3">
           <FeatureCard title="Affordable Prices" desc="Get the best deals on products you love without breaking the bank." />
@@ -95,7 +95,7 @@ export default function LandingPage() {
       </section>
 
       {/* Categories */}
-      <section id="categories" className="scroll-mt-20 py-20 px-6">
+      <section id="categories" className="scroll-mt-20 py-20 px-6 w-screen h-screen">
         <h2 className="text-3xl font-bold mb-10 text-center">Featured Categories</h2>
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
           {[{ label: "GPUs", emoji: "🎮" }, { label: "CPUs", emoji: "🧠" }, { label: "Keyboards", emoji: "⌨️" }, { label: "Monitors", emoji: "🖥️" }]
@@ -104,7 +104,7 @@ export default function LandingPage() {
       </section>
 
       {/* Bestsellers */}
-      <section id="bestsellers" className="scroll-mt-20 py-20 px-6 bg-gray-50">
+      <section id="bestsellers" className="scroll-mt-20 py-20 px-6 bg-gray-50 w-screen h-screen">
         <h2 className="text-3xl font-bold mb-10 text-center">Best Sellers</h2>
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
