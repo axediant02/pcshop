@@ -85,73 +85,85 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section id="features" className="scroll-mt-20 py-20 px-6 w-screen h-screen">
-        <h2 className="text-3xl font-bold mb-10 text-center">Why Shop With Us?</h2>
-        <div className="grid gap-8 md:grid-cols-3">
-          <FeatureCard title="Affordable Prices" desc="Get the best deals on products you love without breaking the bank." />
-          <FeatureCard title="Fast Delivery" desc="Quick and reliable shipping, so you never wait too long." />
-          <FeatureCard title="Quality Guaranteed" desc="All products are carefully selected and quality checked." />
+      <section id="features" className="scroll-mt-20 py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-10 text-center">Why Shop With Us?</h2>
+          <div className="grid gap-8 md:grid-cols-3">
+            <FeatureCard title="Affordable Prices" desc="Get the best deals on products you love without breaking the bank." />
+            <FeatureCard title="Fast Delivery" desc="Quick and reliable shipping, so you never wait too long." />
+            <FeatureCard title="Quality Guaranteed" desc="All products are carefully selected and quality checked." />
+          </div>
         </div>
       </section>
 
       {/* Categories */}
-      <section id="categories" className="scroll-mt-20 py-20 px-6 w-screen h-screen">
-        <h2 className="text-3xl font-bold mb-10 text-center">Featured Categories</h2>
-        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
-          {[{ label: "GPUs", emoji: "🎮" }, { label: "CPUs", emoji: "🧠" }, { label: "Keyboards", emoji: "⌨️" }, { label: "Monitors", emoji: "🖥️" }]
-            .map((c) => <CategoryCard key={c.label} {...c} />)}
+      <section id="categories" className="scroll-mt-20 py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-10 text-center">Featured Categories</h2>
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
+            {[{ label: "GPUs", emoji: "🎮" }, { label: "CPUs", emoji: "🧠" }, { label: "Keyboards", emoji: "⌨️" }, { label: "Monitors", emoji: "🖥️" }]
+              .map((c) => <CategoryCard key={c.label} {...c} />)}
+          </div>
         </div>
       </section>
 
       {/* Bestsellers */}
-      <section id="bestsellers" className="scroll-mt-20 py-20 px-6 bg-gray-50 w-screen h-screen">
-        <h2 className="text-3xl font-bold mb-10 text-center">Best Sellers</h2>
-        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <ProductCard key={i} title={`Product ${i + 1}`} price="$199" />
-          ))}
+      <section id="bestsellers" className="scroll-mt-20 py-20 px-6 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-10 text-center">Best Sellers</h2>
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <ProductCard key={i} title={`Product ${i + 1}`} price="$199" />
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Testimonials */}
       <section id="testimonials" className="scroll-mt-20 py-20 px-6">
-        <h2 className="text-3xl font-bold mb-10 text-center">What Customers Say</h2>
-        <div className="grid gap-6 md:grid-cols-3">
-          {[
-            "Blazing fast delivery and top-notch build quality!",
-            "Best prices I found online.",
-            "Excellent support helped me pick the right parts."
-          ].map((quote, idx) => (
-            <TestimonialCard key={idx} quote={quote} />
-          ))}
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-10 text-center">What Customers Say</h2>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              "Blazing fast delivery and top-notch build quality!",
+              "Best prices I found online.",
+              "Excellent support helped me pick the right parts."
+            ].map((quote, idx) => (
+              <TestimonialCard key={idx} quote={quote} />
+            ))}
+          </div>
         </div>
       </section>
 
       {/* About */}
       <section id="about" className="scroll-mt-20 py-20 px-6">
-        <h2 className="text-3xl font-bold mb-6 text-center">About Us</h2>
-        <p className="text-center max-w-3xl mx-auto text-lg text-gray-600">
-          At MyShop, we believe shopping should be easy, enjoyable, and affordable. 
-          Our mission is to bring high-quality products closer to you, with fast 
-          delivery and excellent customer service.
-        </p>
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-6 text-center">About Us</h2>
+          <p className="text-center max-w-3xl mx-auto text-lg text-gray-600">
+            At MyShop, we believe shopping should be easy, enjoyable, and affordable. 
+            Our mission is to bring high-quality products closer to you, with fast 
+            delivery and excellent customer service.
+          </p>
+        </div>
       </section>
 
       {/* Newsletter */}
       <section id="newsletter" className="scroll-mt-20 py-20 px-6">
-        <div className="text-center max-w-xl mx-auto">
-          <h2 className="text-3xl font-bold mb-3">Ready to find your next favorite product?</h2>
-          <p className="text-gray-600">Join our newsletter for exclusive deals and build tips.</p>
-          <form action="#" className="mt-6 flex gap-2">
-            <input
-              type="email"
-              placeholder="you@example.com"
-              className="flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button type="submit" className="px-6 py-3 rounded-lg bg-blue-600 text-white shadow hover:bg-blue-700 transition">
-              Subscribe
-            </button>
-          </form>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-xl mx-auto">
+            <h2 className="text-3xl font-bold mb-3">Ready to find your next favorite product?</h2>
+            <p className="text-gray-600">Join our newsletter for exclusive deals and build tips.</p>
+            <form action="#" className="mt-6 flex gap-2">
+              <input
+                type="email"
+                placeholder="you@example.com"
+                className="flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button type="submit" className="px-6 py-3 rounded-lg bg-blue-600 text-white shadow hover:bg-blue-700 transition">
+                Subscribe
+              </button>
+            </form>
+          </div>
         </div>
       </section>
 
@@ -160,7 +172,9 @@ export default function LandingPage() {
         id="contact"
         className="scroll-mt-20 bg-gray-900 text-white py-20 px-6 text-center"
       >
-        <p>&copy; {new Date().getFullYear()} MyShop. All rights reserved.</p>
+        <div className="max-w-7xl mx-auto">
+          <p>&copy; {new Date().getFullYear()} MyShop. All rights reserved.</p>
+        </div>
       </footer>
     </main>
   );
