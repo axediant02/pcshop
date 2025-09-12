@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { login } from "@/services/authService"; // Import the login service
+import { toast } from 'react-toastify'; // Import toast for notifications
 
 interface LoginModalProps {
   open: boolean;
@@ -14,7 +15,8 @@ interface LoginModalProps {
 export default function LoginModal({ open, onClose }: LoginModalProps) {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false); // State for loading indicator
-  const [error, setError] = useState(""); // State for error messages
+  // Removed local error state as toast will handle error display
+  // const [error, setError] = useState(""); 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -23,7 +25,8 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(""); // Clear previous errors
+    // Clear previous errors (if any were displayed locally, though now using toast)
+    // setError(""); 
 
     try {
       // Call the login service with the form data
@@ -32,10 +35,10 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
       // Assuming the login service returns a token upon success
       if (response.token) {
         localStorage.setItem("token", response.token); // Store the token
-        alert("Login successful!"); // Provide user feedback
+        toast.success("Login successful!"); // Provide user feedback with toast
         onClose(); // Close the modal on success
       } else {
-        setError("Login failed: No token received."); // Handle unexpected response
+        toast.error("Login failed: No token received."); // Handle unexpected response with toast
       }
     } catch (err: unknown) {
       // Type guard for Axios error structure
@@ -45,18 +48,18 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
         if (errorResponse.response?.data?.errors) {
           const errors = errorResponse.response.data.errors;
           if (errors.email) {
-            setError(errors.email[0]); // Display the first email-related error
+            toast.error(errors.email[0]); // Display the first email-related error with toast
           } else {
             // Fallback to general message if specific error not found
-            setError(errorResponse.response?.data?.message || 'An unexpected error occurred during login.');
+            toast.error(errorResponse.response?.data?.message || 'An unexpected error occurred during login.');
           }
         } else {
           // If no 'errors' object, use the general message from the response
-          setError(errorResponse.response?.data?.message || 'An unexpected error occurred during login.');
+          toast.error(errorResponse.response?.data?.message || 'An unexpected error occurred during login.');
         }
       } else {
         // Handle non-Axios or unknown errors
-        setError('An unexpected error occurred.');
+        toast.error('An unexpected error occurred.');
       }
     } finally {
       setLoading(false); // Always reset loading state
@@ -72,7 +75,8 @@ export default function LoginModal({ open, onClose }: LoginModalProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} required />
           <Input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
-          {error && <p className="text-red-500 text-sm">{error}</p>} {/* Display error message */}
+          {/* Removed local error display as toast will handle error messages */}
+          {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
           <DialogFooter>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Logging in..." : "Login"} {/* Show loading state */}

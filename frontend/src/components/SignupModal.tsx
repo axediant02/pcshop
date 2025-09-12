@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { signup } from "@/services/authService";
+import { toast } from 'react-toastify'; // Import toast for notifications
 
 interface SignupModalProps {
   open: boolean;
@@ -23,7 +24,8 @@ export default function SignupModal({ open, onClose }: SignupModalProps) {
   // Add passwordConfirmation to the form state
   const [form, setForm] = useState({ name: "", email: "", password: "", passwordConfirmation: "" });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  // Removed local error state as toast will handle error display
+  // const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -32,11 +34,12 @@ export default function SignupModal({ open, onClose }: SignupModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    // Clear previous errors (if any were displayed locally, though now using toast)
+    // setError("");
 
     // Client-side validation for password confirmation
     if (form.password !== form.passwordConfirmation) {
-      setError("Passwords do not match.");
+      toast.error("Passwords do not match."); // Use toast for client-side validation error
       setLoading(false);
       return;
     }
@@ -62,7 +65,7 @@ export default function SignupModal({ open, onClose }: SignupModalProps) {
 
       await signup(signupPayload as unknown as Parameters<typeof signup>[0]);
 
-      alert("Account created successfully!");
+      toast.success("Account created successfully!"); // Use toast for success message
       onClose();
     } catch (err: unknown) {
         if (err && typeof err === 'object' && 'response' in err) {
@@ -72,23 +75,23 @@ export default function SignupModal({ open, onClose }: SignupModalProps) {
                 const errors = errorResponse.response.data.errors;
                 // Prioritize specific error messages from the backend
                 if (errors.password && errors.password.includes("The password confirmation does not match.")) {
-                    setError("Passwords do not match.");
+                    toast.error("Passwords do not match."); // Use toast for backend validation error
                 } else if (errors.email) {
-                    setError(errors.email[0]); // Display first email error
+                    toast.error(errors.email[0]); // Display first email error with toast
                 } else if (errors.name) {
-                    setError(errors.name[0]); // Display first name error
+                    toast.error(errors.name[0]); // Display first name error with toast
                 } else if (errors.password) {
-                    setError(errors.password[0]); // Display first password error
+                    toast.error(errors.password[0]); // Display first password error with toast
                 } else {
                     // Fallback to general message if specific error not found
-                    setError(errorResponse.response?.data?.message || 'Something went wrong');
+                    toast.error(errorResponse.response?.data?.message || 'Something went wrong');
                 }
             } else {
                 // If no 'errors' object, use the general message
-                setError(errorResponse.response?.data?.message || 'Something went wrong');
+                toast.error(errorResponse.response?.data?.message || 'Something went wrong');
             }
         } else {
-            setError('Something went wrong');
+            toast.error('Something went wrong');
       }
     } finally {
       setLoading(false);
@@ -115,7 +118,8 @@ export default function SignupModal({ open, onClose }: SignupModalProps) {
             required
           />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {/* Removed local error display as toast will handle error messages */}
+          {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
 
           <DialogFooter>
             <Button type="submit" disabled={loading} className="w-full">
