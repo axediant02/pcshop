@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import BannerCarousel from "@/components/BannerCarousel";
+import Link from "next/link";
 
 // Feature Card
 const FeatureCard = ({ title, desc }: { title: string; desc: string }) => (
@@ -30,7 +31,7 @@ const ProductCard = ({ title, price }: { title: string; price: string }) => (
       <div className="text-sm text-gray-500">High-performance gear</div>
       <div className="mt-3 flex items-center justify-between">
         <span className="font-bold">{price}</span>
-        <a href="/products" className="text-blue-600 hover:underline">View</a>
+        <Link href="/products" className="text-blue-600 hover:underline">View</Link>
       </div>
     </div>
   </div>
@@ -64,18 +65,18 @@ export default function LandingPage() {
               Custom PCs, components, and gear curated for gamers, creators, and power users.
             </p>
             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-              <a
+              <Link
                 href="/products"
                 className="px-6 py-3 rounded-lg bg-blue-600 text-white shadow hover:bg-blue-700 transition"
               >
                 Start Shopping
-              </a>
-              <a
+              </Link>
+              <Link
                 href="#features"
                 className="px-6 py-3 rounded-lg bg-gray-100 text-gray-900 shadow hover:bg-gray-200 transition"
               >
                 Learn More
-              </a>
+              </Link>
             </div>
           </div>
 
