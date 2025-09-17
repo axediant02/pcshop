@@ -2,9 +2,12 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "react-toastify"; 
-import { Input } from "@/components/ui/input";
+// The 'Input' component is not used in this file, so it can be removed.
+// import { Input } from "@/components/ui/input"; 
 import ProductsNavBar from "@/components/ProductsNavBar";
-
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+ 
+// Define a Product interface
 // Define a Product interface
 interface Product {
   id: number;
@@ -35,7 +38,8 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>(""); // New state for the search input
+  // const [searchTerm, setSearchTerm] = useState<string>(""); // New state for the search input
+  const [searchTerm] = useState<string>(""); // New state for the search input
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -113,10 +117,10 @@ export default function ProductsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {filteredProducts.map((product) => ( // Map over filtered products
-              <div
+            {filteredProducts.map((product) => (
+              <Card
                 key={product.id}
-                className="bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
               >
                 {product.image_url && (
                   <img
@@ -125,10 +129,10 @@ export default function ProductsPage() {
                     className="w-full h-48 object-cover"
                   />
                 )}
-                <div className="p-5">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2 line-clamp-1">
+                <CardContent className="py-5">
+                  <CardTitle className="text-2xl font-bold text-gray-900 mb-2 line-clamp-1">
                     {product.name}
-                  </h2>
+                  </CardTitle>
                   <p className="text-gray-600 text-sm mb-4 line-clamp-2">
                     {product.description}
                   </p>
@@ -137,9 +141,8 @@ export default function ProductsPage() {
                       ${product.price.toFixed(2)}
                     </p>
                   </div>
-                  {/* Removed Add to Cart and Buy Now buttons as per instructions */}
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
