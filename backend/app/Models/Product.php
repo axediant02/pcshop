@@ -12,4 +12,10 @@ class Product extends Model
     {
         return $this->belongsTo(User::class, 'seller_id');
     }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
 }
