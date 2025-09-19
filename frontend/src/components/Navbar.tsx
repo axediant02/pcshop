@@ -1,144 +1,120 @@
+// components/Navbar.tsx
 "use client";
 
 import { useState } from "react";
-import SignupModal from "@/components/SignupModal";
-import LoginModal from "@/components/LoginModal";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react"; // Make sure to install lucide-react
 
-export default function Navbar() {
+interface NavbarProps {
+  onLoginClick: () => void;
+  onSignupClick: () => void;
+}
+
+export function Navbar({ onLoginClick, onSignupClick }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-
-  const handleScroll = (id: string) => {
-    const section = document.getElementById(id);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-      setIsOpen(false);
-    }
-  };
 
   const navLinks = [
-    { label: "About", id: "about" },
-    { label: "Features", id: "features" },
+    { label: "About", href: "/#about" },
+    { label: "Features", href: "/#features" },
     { label: "Shop", href: "/products" },
-    { label: "Contact", id: "contact" },
+    { label: "Contact", href: "/#contact" },
   ];
 
   return (
-    <>
-      <nav className="w-full bg-white shadow fixed top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <button
-              onClick={() => handleScroll("hero")}
-              className="text-2xl font-bold text-blue-600 hover:opacity-80 transition"
-              aria-label="Go to hero section"
-            >
-              MyShop
-            </button>
+    <nav className="fixed top-0 z-50 w-full border-b backdrop-blur-md bg-white/80 dark:bg-gray-900/80 transition-colors duration-300">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link
+            href="/"
+            className="text-2xl font-bold tracking-tighter text-gray-900 dark:text-gray-50 transition-colors duration-300"
+          >
+            MyShop
+          </Link>
 
-            {/* Desktop Nav */}
-            <div className="hidden md:flex items-center space-x-8">
-              {navLinks.map((link, i) =>
-                link.href ? (
-                  <a
-                    key={i}
-                    href={link.href}
-                    className="hover:text-blue-600 transition "
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <button
-                    key={i}
-                    onClick={() => handleScroll(link.id!)}
-                    className="hover:text-blue-600 transition cursor-pointer"
-                  >
-                    {link.label}
-                  </button>
-                )
-              )}
-
-              {/* Auth Buttons */}
-              <button
-                onClick={() => setShowLogin(true)}
-                className="text-blue-600 border border-blue-600 px-3 py-1 rounded-lg hover:bg-blue-50 transition cursor-pointer"
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50 transition-colors duration-200"
               >
-                Login
-              </button>
-              <button
-                onClick={() => setShowSignup(true)}
-                className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition cursor-pointer"
-              >
-                Create Account
-              </button>
-            </div>
-
-            {/* Mobile menu button */}
-            <button
-              className="md:hidden text-gray-700"
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label="Toggle menu"
-            >
-              ☰
-            </button>
+                {link.label}
+              </Link>
+            ))}
           </div>
-        </div>
 
-        {/* Mobile Nav */}
-        {isOpen && (
-          <div className="md:hidden px-4 pb-4 space-y-3 bg-white shadow-inner">
-            {navLinks.map((link, i) =>
-              link.href ? (
-                <a
-                  key={i}
-                  href={link.href}
-                  className="block hover:text-blue-600 transition"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <button
-                  key={i}
-                  onClick={() => handleScroll(link.id!)}
-                  className="block hover:text-blue-600 transition"
-                >
-                  {link.label}
-                </button>
-              )
-            )}
-
-            {/* Divider */}
-            <hr className="my-2" />
-
-            {/* Auth Buttons */}
-            <button
-              onClick={() => {
-                setShowSignup(true);
-                setIsOpen(false);
-              }}
-              className="w-full bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition"
-            >
-              Create Account
-            </button>
-            <button
-              onClick={() => {
-                setShowLogin(true);
-                setIsOpen(false);
-              }}
-              className="w-full text-blue-600 border border-blue-600 px-3 py-2 rounded-lg hover:bg-blue-50 transition"
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              onClick={onLoginClick}
+              className="text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors duration-200"
             >
               Login
-            </button>
+            </Button>
+            <Button
+              onClick={onSignupClick}
+              className="bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
+            >
+              Create Account
+            </Button>
           </div>
-        )}
-      </nav>
 
-      {/* Modals */}
-      <SignupModal open={showSignup} onClose={() => setShowSignup(false)} />
-      <LoginModal open={showLogin} onClose={() => setShowLogin(false)} />
-    </>
+          {/* Mobile menu button */}
+          <Button
+            variant="ghost"
+            className="md:hidden px-2 text-gray-700 dark:text-gray-300"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile Nav */}
+      <div
+        className={`md:hidden absolute w-full transition-all duration-300 ease-in-out overflow-hidden ${
+          isOpen ? "max-h-96 opacity-100 py-4" : "max-h-0 opacity-0"
+        } bg-white dark:bg-gray-900 shadow-lg`}
+      >
+        <div className="flex flex-col space-y-3 px-4">
+          {navLinks.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              className="text-base text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50 transition-colors duration-200"
+              onClick={() => setIsOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <div className="pt-4 flex flex-col space-y-2">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                onLoginClick();
+                setIsOpen(false);
+              }}
+              className="w-full text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors duration-200"
+            >
+              Login
+            </Button>
+            <Button
+              onClick={() => {
+                onSignupClick();
+                setIsOpen(false);
+              }}
+              className="w-full bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
+            >
+              Create Account
+            </Button>
+          </div>
+        </div>
+      </div>
+    </nav>
   );
 }
