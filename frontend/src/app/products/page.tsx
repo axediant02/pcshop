@@ -15,7 +15,7 @@ import ProductsNavBar from "@/components/ProductsNavBar";
 
 // Skeletons for the loading state
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
-import Image from "next/image";
+// import Image from "next/image";
 
 // Define a Product interface
 interface Product {
