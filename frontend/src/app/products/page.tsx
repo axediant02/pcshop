@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ShoppingCart, Zap } from "lucide-react"; // Import icons
 
 // UI Components
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
@@ -49,32 +50,52 @@ async function getProducts(): Promise<Product[]> {
 }
 
 // Product Card component
-const ProductCard = ({ product }: { product: Product }) => (
-  <Card key={product.id} className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
-    {product.image_url && (
-      <img
-        src={product.image_url}
-        alt={product.name}
-        width={300}
-        height={200}
-        className="w-full h-48 object-cover"
-      />
-    )}
-    <CardContent className="py-5">
-      <CardTitle className="text-2xl font-bold text-gray-900 mb-2 line-clamp-1">
-        {product.name}
-      </CardTitle>
-      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-        {product.description}
-      </p>
-      <div className="flex items-center justify-between">
-        <p className="text-3xl font-extrabold text-blue-600">
-          ${product.price.toFixed(2)}
+const ProductCard = ({ product }: { product: Product }) => {
+  const handleAddToCart = () => {
+    toast.success(`${product.name} added to cart!`, { autoClose: 1500 });
+    console.log(`Product ${product.name} added to cart.`);
+  };
+
+  const handleBuyNow = () => {
+    toast.info(`Proceeding to checkout with ${product.name}.`, { autoClose: 1500 });
+    console.log(`Buying ${product.name} now.`);
+  };
+  
+  return (
+    <Card key={product.id} className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+      {product.image_url && (
+        <img
+          src={product.image_url}
+          alt={product.name}
+          width={300}
+          height={200}
+          className="w-full h-48 object-cover"
+        />
+      )}
+      <CardContent className="py-5">
+        <CardTitle className="text-2xl font-bold text-gray-900 mb-2 line-clamp-1">
+          {product.name}
+        </CardTitle>
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+          {product.description}
         </p>
-      </div>
-    </CardContent>
-  </Card>
-);
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-3xl font-extrabold text-blue-600">
+            ${product.price.toFixed(2)}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={handleAddToCart} variant="outline" className="flex-1">
+            <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
+          </Button>
+          <Button onClick={handleBuyNow} className="flex-1">
+            <Zap className="mr-2 h-4 w-4" /> Buy Now
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);

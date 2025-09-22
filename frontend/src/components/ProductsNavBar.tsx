@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ChevronDown, ShoppingCart, User, X, LayoutGrid } from "lucide-react";
@@ -22,15 +22,20 @@ interface ProductsNavBarProps {
   onCategoryChange: (category: string) => void;
 }
 
-const categories = ["All", "Electronics", "Apparel", "Furniture", "Home Goods", "Fitness"];
+const categories = ["All", "Laptops", "Desktops", "PC Components", "Peripherals", "Monitors", "Keyboard", "Storage"];
 
 export default function ProductsNavBar({ onSearch, onCategoryChange }: ProductsNavBarProps) {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(searchParams.get("category") || "All");
 
   useEffect(() => {
     setSearch(searchParams.get("search") || "");
+  }, [searchParams]);
+
+  useEffect(() => {
+    setActiveCategory(searchParams.get("category") || "All");
   }, [searchParams]);
 
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -44,20 +49,20 @@ export default function ProductsNavBar({ onSearch, onCategoryChange }: ProductsN
     console.log("Logged out");
   };
 
+  const handleCategoryClick = (category: string) => {
+    setActiveCategory(category);
+    onCategoryChange(category === "All" ? "" : category);
+  };
+
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm py-4 border-b border-gray-200">
       <div className="container mx-auto px-4 flex items-center justify-between gap-4">
-
-        {/* --- Logo/Name Section --- */}
-        {/* On mobile, this entire block is hidden to prioritize the search bar. */}
         <Link href="/" className="hidden sm:block">
           <div className="text-2xl font-bold hover:text-blue-600 transition-colors whitespace-nowrap">
             MyShop
           </div>
         </Link>
         
-        {/* --- Search Bar Section --- */}
-        {/* On mobile, this section fills the available space. */}
         <div className="flex-1">
           {/* Desktop Search Bar */}
           <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-lg hidden sm:block mx-auto">
@@ -84,34 +89,51 @@ export default function ProductsNavBar({ onSearch, onCategoryChange }: ProductsN
           </form>
         </div>
 
-        {/* --- Action Buttons Section --- */}
         <div className="flex items-center space-x-2 sm:space-x-4">
+          {/* Categories Segmented Control (Desktop) */}
+          <div className="hidden sm:flex rounded-full border border-gray-300 bg-gray-100 p-1">
+            {categories.map((cat) => (
+              <Button
+                key={cat}
+                variant="ghost"
+                className={`rounded-full text-sm font-medium transition-colors ${
+                  activeCategory === cat ? 'bg-white text-gray-900 shadow' : 'text-gray-500 hover:text-gray-900'
+                }`}
+                onClick={() => handleCategoryClick(cat)}
+              >
+                {cat}
+              </Button>
+            ))}
+          </div>
           
-          {/* Categories Dropdown */}
+          {/* Categories Dropdown (Mobile) */}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              {/* This button now uses an icon instead of text */}
-              <Button variant="outline" size="icon" className="flex items-center gap-2">
-                <LayoutGrid className="w-5 h-5" />
+            <DropdownMenuTrigger asChild className="sm:hidden">
+              <Button variant="outline" className="flex items-center gap-2">
+                <span className="sm:hidden">
+                  <LayoutGrid className="w-5 h-5" />
+                </span>
+                <span className="hidden sm:block">
+                  Categories
+                  <ChevronDown className="w-4 h-4" />
+                </span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {categories.map((cat) => (
-                <DropdownMenuItem key={cat} onClick={() => onCategoryChange(cat === "All" ? "" : cat)}>
+                <DropdownMenuItem key={cat} onClick={() => handleCategoryClick(cat)}>
                   {cat}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Cart Button */}
           <Link href="/cart">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />
             </Button>
           </Link>
 
-          {/* Account Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" aria-label="Account">
@@ -134,7 +156,6 @@ export default function ProductsNavBar({ onSearch, onCategoryChange }: ProductsN
         </div>
       </div>
 
-      {/* Full-width Search Bar for Mobile (Hidden by default) */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-[60] bg-white transition-all duration-300">
           <div className="container mx-auto px-4 py-4 flex items-center gap-2">
