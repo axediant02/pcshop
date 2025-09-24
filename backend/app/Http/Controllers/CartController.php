@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\CartItem;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -12,54 +14,79 @@ class CartController extends Controller
      */
     public function index()
     {
-        //
+        $cart = Cart::firstOrCreate(['user_id' => auth()->id()]);
+
+        $items = $cart->items()->with('product')->get();
+
+        return response()->json([
+            'cart_id' => $cart->id,
+            'items'   => $items
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Add a product to the cart.
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity'   => 'required|integer|min:1',
+        ]);
+
+        $cart = Cart::firstOrCreate(['user_id' => auth()->id()]);
+
+        $item = CartItem::where('cart_id', $cart->id)
+            ->where('product_id', $request->product_id)
+            ->first();
+
+        if ($item) {
+            $item->quantity += $request->quantity;
+            $item->save();
+        } else {
+            $item = CartItem::create([
+                'cart_id'    => $cart->id,
+                'product_id' => $request->product_id,
+                'quantity'   => $request->quantity,
+            ]);
+        }
+
+        return response()->json(['message' => 'Item added to cart', 'item' => $item], 201);
     }
 
     /**
-     * Display the specified resource.
+     * Update item quantity in cart.
      */
-    public function show(Cart $cart)
+    public function update(Request $request, $itemId)
     {
-        //
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $item = CartItem::findOrFail($itemId);
+
+        if ($item->cart->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $item->update(['quantity' => $request->quantity]);
+
+        return response()->json(['message' => 'Cart item updated', 'item' => $item]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Remove an item from the cart.
      */
-    public function edit(Cart $cart)
+    public function destroy($itemId)
     {
-        //
-    }
+        $item = CartItem::findOrFail($itemId);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Cart $cart)
-    {
-        //
-    }
+        if ($item->cart->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Cart $cart)
-    {
-        //
+        $item->delete();
+
+        return response()->json(['message' => 'Item removed from cart']);
     }
 }

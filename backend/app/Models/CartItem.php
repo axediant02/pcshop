@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
 {
-    protected $filalble = ['cart_id', 'product_id', 'quantity', 'price'];
+    protected $fillable = ['cart_id', 'product_id', 'quantity', 'price'];
 
     public function cart(){
         return $this->belongsTo(Cart::class);
