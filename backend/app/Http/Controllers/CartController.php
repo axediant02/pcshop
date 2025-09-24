@@ -48,6 +48,7 @@ class CartController extends Controller
                 'cart_id'    => $cart->id,
                 'product_id' => $request->product_id,
                 'quantity'   => $request->quantity,
+                'price'      => Product::findOrFail($request->product_id)->price,
             ]);
         }
 
