@@ -5,19 +5,15 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ShoppingCart, Zap } from "lucide-react"; // Import icons
-
-// UI Components
+import { ShoppingCart, Zap } from "lucide-react";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import ProductsNavBar from "@/components/ProductsNavBar";
-
-// Skeletons for the loading state
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
-// import Image from "next/image";
-
-// Define a Product interface
+import { getProducts } from "@/services/productServices";
+// import { getProducts } from "@/services/productServices";
+  
 interface Product {
   id: number;
   name: string;
@@ -27,27 +23,21 @@ interface Product {
   category: string;
 }
 
-// Mock API call to get products
-async function getProducts(): Promise<Product[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        { id: 1, name: "Stylish T-Shirt", description: "Comfortable cotton t-shirt, perfect for everyday wear. Available in multiple sizes and colors.", price: 25.00, image_url: "https://via.placeholder.com/300x200/FF5733/FFFFFF?text=T-Shirt", category: "Apparel" },
-        { id: 2, name: "Ergonomic Office Chair", description: "Designed for maximum comfort and support during long working hours. Features adjustable lumbar support and armrests.", price: 199.99, image_url: "https://via.placeholder.com/300x200/33FF57/FFFFFF?text=Office+Chair", category: "Furniture" },
-        { id: 3, name: "Wireless Headphones", description: "High-fidelity sound with noise-cancelling features for an immersive audio experience. Long-lasting battery life.", price: 120.50, image_url: "https://via.placeholder.com/300x200/3357FF/FFFFFF?text=Headphones", category: "Electronics" },
-        { id: 4, name: "Smartwatch", description: "Track your fitness, receive notifications, and stay connected on the go. Water-resistant design.", price: 89.95, image_url: "https://via.placeholder.com/300x200/FF33A1/FFFFFF?text=Smartwatch", category: "Electronics" },
-        { id: 5, name: "Portable Bluetooth Speaker", description: "Compact and powerful speaker with rich bass and clear highs. Perfect for outdoor adventures.", price: 45.00, image_url: "https://via.placeholder.com/300x200/A1FF33/FFFFFF?text=Speaker", category: "Electronics" },
-        { id: 6, name: "Designer Backpack", description: "Durable and stylish backpack with multiple compartments for all your essentials. Ideal for travel or daily commute.", price: 75.00, image_url: "https://via.placeholder.com/300x200/33A1FF/FFFFFF?text=Backpack", category: "Apparel" },
-        { id: 7, name: "Gaming Keyboard", description: "Mechanical gaming keyboard with customizable RGB lighting and responsive keys for competitive play.", price: 79.99, image_url: "https://via.placeholder.com/300x200/FFC300/000000?text=Keyboard", category: "Electronics" },
-        { id: 8, name: "Coffee Maker", description: "Programmable coffee maker with a built-in grinder for fresh, aromatic coffee every morning.", price: 60.00, image_url: "https://via.placeholder.com/300x200/C70039/FFFFFF?text=Coffee+Maker", category: "Home Goods" },
-        { id: 9, name: "Leather Wallet", description: "A sleek and compact wallet made from genuine leather.", price: 40.00, image_url: "https://via.placeholder.com/300x200/3498DB/FFFFFF?text=Wallet", category: "Apparel" },
-        { id: 10, name: "Desk Lamp", description: "Modern LED desk lamp with adjustable brightness and color temperature.", price: 35.00, image_url: "https://via.placeholder.com/300x200/9B59B6/FFFFFF?text=Desk+Lamp", category: "Home Goods" },
-        { id: 11, name: "Yoga Mat", description: "Non-slip, eco-friendly yoga mat for all your fitness needs.", price: 30.00, image_url: "https://via.placeholder.com/300x200/1ABC9C/FFFFFF?text=Yoga+Mat", category: "Fitness" },
-        { id: 12, name: "Fitness Tracker", description: "Monitors heart rate, steps, and sleep patterns.", price: 95.00, image_url: "https://via.placeholder.com/300x200/2ECC71/FFFFFF?text=Fitness+Tracker", category: "Fitness" },
-      ]);
-    }, 1000); // Simulate network delay of 1 second
-  });
-}
+// export default function Products() {
+//   const [products, setProducts] = useState<Product[]>([]);
+
+//   useEffect(() => {
+//     async function loadProducts() {
+//       try {
+//         const data = await getProducts();
+//         setProducts(data);
+//       } catch (error) {
+//         console.error("Error fetching products:", error);
+//       }
+//     }
+//     loadProducts();
+//   }, []);
+// }
 
 // Product Card component
 const ProductCard = ({ product }: { product: Product }) => {
@@ -81,7 +71,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         </p>
         <div className="flex items-center justify-between mb-4">
           <p className="text-3xl font-extrabold text-blue-600">
-            ${product.price.toFixed(2)}
+            ${Number(product.price).toFixed(2)}
           </p>
         </div>
         <div className="flex gap-2">
@@ -96,7 +86,7 @@ const ProductCard = ({ product }: { product: Product }) => {
     </Card>
   );
 };
-//TEST
+
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
