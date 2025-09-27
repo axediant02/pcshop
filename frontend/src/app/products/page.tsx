@@ -1,4 +1,4 @@
-// app/products/page.tsx
+//products page
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import ProductsNavBar from "@/components/ProductsNavBar";
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 import { getProducts } from "@/services/productServices";
-// import { getProducts } from "@/services/productServices";
   
 interface Product {
   id: number;
@@ -23,23 +22,6 @@ interface Product {
   category: string;
 }
 
-// export default function Products() {
-//   const [products, setProducts] = useState<Product[]>([]);
-
-//   useEffect(() => {
-//     async function loadProducts() {
-//       try {
-//         const data = await getProducts();
-//         setProducts(data);
-//       } catch (error) {
-//         console.error("Error fetching products:", error);
-//       }
-//     }
-//     loadProducts();
-//   }, []);
-// }
-
-// Product Card component
 const ProductCard = ({ product }: { product: Product }) => {
   const handleAddToCart = () => {
     toast.success(`${product.name} added to cart!`, { autoClose: 1500 });
@@ -119,7 +101,6 @@ export default function ProductsPage() {
   const filteredProducts = useMemo(() => {
     let tempProducts = [...products];
 
-    // Filter by search term
     if (searchTerm) {
       const lowercasedSearchTerm = searchTerm.toLowerCase();
       tempProducts = tempProducts.filter(
@@ -129,7 +110,6 @@ export default function ProductsPage() {
       );
     }
 
-    // Filter by category
     if (category) {
       tempProducts = tempProducts.filter(
         (product) => product.category.toLowerCase() === category.toLowerCase()
@@ -139,7 +119,6 @@ export default function ProductsPage() {
     return tempProducts;
   }, [products, searchTerm, category]);
 
-  // Update URL with search and category filters
   const handleSearch = useCallback((query: string) => {
     const newSearchParams = new URLSearchParams(searchParams);
     if (query) {
