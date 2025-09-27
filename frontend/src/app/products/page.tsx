@@ -96,7 +96,7 @@ const ProductCard = ({ product }: { product: Product }) => {
     </Card>
   );
 };
-
+//TEST
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
