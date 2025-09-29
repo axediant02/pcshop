@@ -125,7 +125,6 @@ export default function CheckoutPage() {
   const otherItemsCount = orderItems.length - 2;
 
   const toastStyle = {
-    position: "fixed",
     top: "1rem",
     right: "1rem",
     zIndex: 9999,
