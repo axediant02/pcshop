@@ -11,7 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import ProductsNavBar from "@/components/ProductsNavBar";
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
-import { getProducts } from "@/services/productServices";  
+import { cartService } from "@/services/cartService";
+import { getProducts } from "@/services/productServices";
+import { isAxiosError } from "axios";
+
 interface Product {
   id: number;
   name: string;
@@ -23,15 +26,28 @@ interface Product {
 
 const ProductCard = ({ product }: { product: Product }) => {
   const router = useRouter();
-  const handleAddToCart = () => {
-    toast.success(`${product.name} added to cart!`, { autoClose: 1500 });
-    console.log(`Product ${product.name} added to cart.`);
+  const [adding, setAdding] = useState(false);
+
+  const handleAddToCart = async () => {
+    try {
+      setAdding(true);
+      await cartService.addToCart({ product_id: product.id, quantity: 1 });
+      toast.success(`${product.name} added to cart!`, { autoClose: 1500 });
+    } catch (error: unknown) {
+      const status = isAxiosError(error) ? error.response?.status : undefined;
+      if (status === 401) {
+        toast.error("Please log in to add items to your cart.");
+      } else {
+        toast.error("Failed to add to cart. Please try again.");
+      }
+    } finally {
+      setAdding(false);
+    }
   };
 
   const handleBuyNow = () => {
     router.push(`/checkout?product_id=${product.id}&quantity=1`);
   };
-  
   return (
     <Card key={product.id} className="overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
       {product.image_url && (
@@ -56,7 +72,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={handleAddToCart} variant="outline" className="flex-1">
+          <Button onClick={handleAddToCart} variant="outline" className="flex-1" disabled={adding}>
             <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
           </Button>
           <Button onClick={handleBuyNow} className="flex-1">

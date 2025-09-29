@@ -12,7 +12,7 @@ export const cartService = {
     },
 
     async addToCart(item: CartItems) {
-        const response = await axiosURL.post('/carts/items', item);
+        const response = await axiosURL.post('/carts', item);
         return response.data;
     },
 
