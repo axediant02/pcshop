@@ -12,11 +12,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react"; // Make sure lucide-react is installed: npm install lucide-react
+import { Loader2 } from "lucide-react";
+import { signup } from "@/services/authService";
+import { toast } from "react-toastify";
+import { useState } from "react";
 
 interface SignUpDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
   form: {
     name: string;
     email: string;
@@ -32,15 +36,46 @@ interface SignUpDialogProps {
 export function SignUpDialog({
   open,
   onOpenChange,
-  form,
-  onFormChange,
-  onSubmit,
-  isLoading,
+  onSuccess,
 }: SignUpDialogProps) {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    passwordConfirmation: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isLoading) return;
+    setIsLoading(true);
+    try {
+      await signup({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        password_confirmation: form.passwordConfirmation,
+      });
+      toast.success("Account created! You can now log in.");
+      onSuccess?.();
+      onOpenChange(false);
+    } catch (err: unknown) {
+      toast.error("Sign up failed. Please check your details.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md w-full p-6 space-y-6 rounded-lg shadow-xl"> {/* Added shadow-xl and rounded-lg */}
-        <DialogHeader className="text-center"> {/* Centered header text */}
+      <DialogContent className="sm:max-w-md w-full p-6 space-y-6 rounded-lg shadow-xl">
+        <DialogHeader className="text-center">
           <DialogTitle className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
             Join MyShop
           </DialogTitle>
@@ -48,7 +83,7 @@ export function SignUpDialog({
             Create an account to start shopping and manage your orders.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid gap-2">
             <Label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Name
@@ -60,7 +95,7 @@ export function SignUpDialog({
               placeholder="Your full name"
               aria-label="Your full name"
               value={form.name}
-              onChange={onFormChange}
+              onChange={handleFormChange}
               required
               className="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-50"
             />
@@ -76,7 +111,7 @@ export function SignUpDialog({
               placeholder="you@example.com"
               aria-label="Your email address"
               value={form.email}
-              onChange={onFormChange}
+              onChange={handleFormChange}
               required
               className="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-50"
             />
@@ -92,7 +127,7 @@ export function SignUpDialog({
               placeholder="••••••••"
               aria-label="Your password"
               value={form.password}
-              onChange={onFormChange}
+              onChange={handleFormChange}
               required
               className="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-50"
             />
@@ -108,7 +143,7 @@ export function SignUpDialog({
               placeholder="••••••••"
               aria-label="Confirm your password"
               value={form.passwordConfirmation}
-              onChange={onFormChange}
+              onChange={handleFormChange}
               required
               className="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-50"
             />

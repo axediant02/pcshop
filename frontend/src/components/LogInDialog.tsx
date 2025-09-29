@@ -11,11 +11,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react"; // Make sure lucide-react is installed: npm install lucide-react
+import { Loader2 } from "lucide-react";
+import { login } from "@/services/authService";
+import { toast } from "react-toastify";
+import { useState } from "react";
 
 interface LoginDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSuccess?: () => void;
   form: {
     email: string;
     password: string;
@@ -28,19 +32,40 @@ interface LoginDialogProps {
 
 
 
- export function LoginDialog({
+export function LoginDialog({
   open,
   onOpenChange,
-  form,
-  onFormChange,
-  onSubmit,
-  isLoading,
-  onForgotPasswordClick,
+  onSuccess,
 }: LoginDialogProps) {
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isLoading) return;
+    setIsLoading(true);
+    try {
+      const res = await login({ email: form.email, password: form.password });
+      if (res?.token) localStorage.setItem("token", res.token);
+      toast.success("Logged in successfully");
+      onSuccess?.();
+      onOpenChange(false);
+    } catch (err: unknown) {
+      toast.error("Login failed. Check your credentials.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md w-full p-6 space-y-6 rounded-lg shadow-xl"> {/* Added shadow-xl and rounded-lg */}
-        <DialogHeader className="text-center"> {/* Centered header text */}
+      <DialogContent className="sm:max-w-md w-full p-6 space-y-6 rounded-lg shadow-xl">
+        <DialogHeader className="text-center">
           <DialogTitle className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
             Welcome Back!
           </DialogTitle>
@@ -48,7 +73,7 @@ interface LoginDialogProps {
             Log in to your account to continue shopping.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid gap-2">
             <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Email
@@ -60,7 +85,7 @@ interface LoginDialogProps {
               placeholder="you@example.com"
               aria-label="Your email address"
               value={form.email}
-              onChange={onFormChange}
+              onChange={handleFormChange}
               required
               className="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-50"
             />
@@ -76,20 +101,10 @@ interface LoginDialogProps {
               placeholder="••••••••"
               aria-label="Your password"
               value={form.password}
-              onChange={onFormChange}
+              onChange={handleFormChange}
               required
               className="px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-gray-50"
             />
-            {onForgotPasswordClick && (
-              <Button
-                variant="link"
-                type="button"
-                onClick={onForgotPasswordClick}
-                className="text-sm text-blue-600 hover:underline p-0 h-auto justify-end mt-1 dark:text-blue-400"
-              >
-                Forgot password?
-              </Button>
-            )}
           </div>
           <DialogFooter className="pt-4 sm:pt-4">
             <Button
