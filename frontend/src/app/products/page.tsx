@@ -22,6 +22,7 @@ interface Product {
 }
 
 const ProductCard = ({ product }: { product: Product }) => {
+  const router = useRouter();
   const handleAddToCart = () => {
     toast.success(`${product.name} added to cart!`, { autoClose: 1500 });
     console.log(`Product ${product.name} added to cart.`);
