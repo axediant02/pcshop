@@ -8,6 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Check, Truck, Lock, CreditCard, Clock, XCircle } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 
 interface CartItem {
@@ -29,6 +37,7 @@ interface PaymentMethod {
 
 export default function CheckoutPage() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("cod");
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false); // State for cancel confirmation dialog
 
   const mockRouterPush = (path: string) => {
     console.log(`Mock Navigation: Navigating to ${path}`);
@@ -116,7 +125,14 @@ export default function CheckoutPage() {
     }
   };
 
+  // Modified handleCancelOrder to show confirmation dialog
   const handleCancelOrder = () => {
+    setShowCancelConfirm(true);
+  };
+
+  // New function for confirmed cancellation
+  const handleConfirmCancel = () => {
+    setShowCancelConfirm(false); // Close the dialog
     toast.info("Order cancelled. Returning to products page.", { autoClose: 2000 });
     router.push("/products");
   };
@@ -261,7 +277,7 @@ export default function CheckoutPage() {
                 <Button
                   className="w-full text-lg py-3"
                   variant="outline"
-                  onClick={handleCancelOrder}
+                  onClick={handleCancelOrder} // This now opens the confirmation dialog
                 >
                   <XCircle className="w-5 h-5 mr-2 text-red-500" />
                   Cancel Order
@@ -275,6 +291,34 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
+      {/* Cancel Confirmation Dialog */}
+      <Dialog open={showCancelConfirm} onOpenChange={setShowCancelConfirm}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirm Cancellation</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to cancel your order? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowCancelConfirm(false)}
+              className="w-full sm:w-auto"
+            >
+              No, keep my order
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleConfirmCancel}
+              className="w-full sm:w-auto"
+            >
+              Yes, cancel order
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
