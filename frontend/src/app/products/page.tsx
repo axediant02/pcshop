@@ -29,7 +29,6 @@ const ProductCard = ({ product }: { product: Product }) => {
   };
 
   const handleBuyNow = () => {
-    toast.info(`Proceeding to checkout with ${product.name}.`, { autoClose: 1500 });
     router.push(`/checkout?product_id=${product.id}&quantity=1`);
   };
   
