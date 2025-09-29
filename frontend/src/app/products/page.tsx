@@ -11,8 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import ProductsNavBar from "@/components/ProductsNavBar";
 import ProductCardSkeleton from "@/components/ProductCardSkeleton";
-import { getProducts } from "@/services/productServices";
-  
+import { getProducts } from "@/services/productServices";  
 interface Product {
   id: number;
   name: string;
@@ -23,6 +22,7 @@ interface Product {
 }
 
 const ProductCard = ({ product }: { product: Product }) => {
+  const router = useRouter();
   const handleAddToCart = () => {
     toast.success(`${product.name} added to cart!`, { autoClose: 1500 });
     console.log(`Product ${product.name} added to cart.`);
@@ -30,7 +30,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   const handleBuyNow = () => {
     toast.info(`Proceeding to checkout with ${product.name}.`, { autoClose: 1500 });
-    console.log(`Buying ${product.name} now.`);
+    router.push(`/checkout?product_id=${product.id}&quantity=1`);
   };
   
   return (
