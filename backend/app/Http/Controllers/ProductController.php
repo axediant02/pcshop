@@ -81,7 +81,7 @@ class ProductController extends Controller
             'data' => $product
         ], 200);
     }
-
+//asdasdsad
     /**
      * Remove the specified resource from storage.
      */
@@ -95,3 +95,4 @@ class ProductController extends Controller
 }
 
 //etstsdf
+//asdasd
